@@ -1,0 +1,21 @@
+[Unit]
+Description=teamchat service file
+After=network.service
+
+[Service]
+Type=simple
+ExecStart={{ errbot_path.stdout }} --config {{ errbot_config }}
+TimeoutStartSec=0
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGINT
+Environment=PYTHONUNBUFFERED=true
+Environment=LC_ALL=en_US.UTF-8
+Environment=TC_SOURCE={{ tc_source }}
+Environment=TC_DESTINATION={{ tc_destination }}
+Environment=TC_DESTINATION_ENDPOINT={{ tc_destination_endpoint }}
+Environment=TC_CHANNEL={{ tc_channel }}
+Environment=TC_TO={{ tc_to }}
+
+[Install]
+WantedBy=multi-user.target

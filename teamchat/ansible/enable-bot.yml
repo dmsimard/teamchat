@@ -1,0 +1,72 @@
+- hosts: localhost
+  gather_facts: yes
+  become: true
+  handlers:
+    - name: Restart bots
+      service:
+        name: "{{ item }}"
+        state: restarted
+      with_items:
+        - teamchat-source
+        - teamchat-destination
+  tasks:
+    - name: Ensure which is installed
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+      package:
+        name: which
+        state: present
+
+    - name: Get path to errbot
+      command: which errbot
+      register: errbot_path
+
+    - name: Copy systemd service template for the source backend
+      become: true
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+        errbot_config: "{{ source_backend }}"
+        tc_source: "{{ source }}"
+        tc_destination: "{{ destination }}"
+        tc_destination_endpoint: "http://127.0.0.1:3124/teamchat"
+        tc_channel: "{{ channel }}"
+        tc_to: "{{ to }}"
+      template:
+        src: templates/service.conf.j2
+        dest: "/etc/systemd/system/teamchat-source.service"
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - Restart bots
+
+    # Source and destination are swapped so the bridge is bidirectional
+    - name: Copy systemd service template for the destination backend
+      become: true
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+        errbot_config: "{{ destination_backend }}"
+        tc_source: "{{ destination }}"
+        tc_destination: "{{ source }}"
+        tc_destination_endpoint: "http://127.0.0.1:3123/teamchat"
+        tc_channel: "{{ to }}"
+        tc_to: "{{ channel }}"
+      template:
+        src: templates/service.conf.j2
+        dest: "/etc/systemd/system/teamchat-destination.service"
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - Restart bots
+
+    - name: Enable and start the bots
+      become: true
+      service:
+        name: "{{ item }}.service"
+        state: started
+        daemon_reload: yes
+        enabled: yes
+      with_items:
+        - teamchat-source
+        - teamchat-destination

@@ -1,0 +1,7 @@
+errbot
+slackclient
+irc
+requests
+click
+ansible
+ansible_runner

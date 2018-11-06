@@ -1,0 +1,12 @@
+[Core]
+name = teamchat
+module = teamchat
+
+[Documentation]
+description = teamchat
+
+[Python]
+version = 3
+
+[Errbot]
+min = 5.2.0
