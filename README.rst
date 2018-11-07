@@ -45,7 +45,7 @@ Installing teamchat
 
 Anywhere with python >= 3.6 available::
 
-    pip install teamchat
+    pip3 install teamchat
 
 Configuring teamchat
 ====================
