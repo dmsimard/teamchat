@@ -118,9 +118,7 @@ Known issues
 Contributors
 ============
 
-See contributors on GitHub_.
-
-.. _GitHub: https://github.com/dmsimard/teamchat/graphs/contributors
+See contributors on `GitHub <https://github.com/dmsimard/teamchat/graphs/contributors>`_.
 
 Copyright
 =========
