@@ -71,5 +71,10 @@ class TeamChat(BotPlugin):
         )
         endpoint = os.getenv('TC_DESTINATION_ENDPOINT')
 
+        # Don't attempt to bridge messages that are empty or have failed to parse
+        if data['author'] == '' or data['message'] == '':
+            logging.info("Not sending bridge request: empty or failed to parse")
+            return
+
         logging.info("Sending bridge request")
         r = requests.post(endpoint, data=json.dumps(data))
