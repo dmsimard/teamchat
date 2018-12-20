@@ -33,12 +33,16 @@ class TeamChat(BotPlugin):
 
         # Don't handle the request if we're not the destination
         if params["destination"] != os.getenv('TC_SOURCE'):
-            logging.warn(f"Ignoring request for bridging to {params['destination']}")
+            logging.warn(f"Ignoring request for bridging to {params['destination']}, wrong source.")
             return
 
         # Don't handle the request if we're not managing the channel
         if params["to"] != os.getenv('TC_CHANNEL'):
-            logging.warn(f"Ignoring request for bridging to {params['destination']}")
+            logging.warn(f"Ignoring request for bridging to {params['destination']}, wrong destination.")
+            return
+
+        if len(params["message"]) > 500:
+            logging.warn(f"Ignoring request for bridging to {params['destination']}, message too large.")
             return
 
         # Broadcast the message to the channel we're configured to use
